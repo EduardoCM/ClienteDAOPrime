@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        
+        <center>
+            <p:growl id="msj" showDetail="true" />
+            <h:form id="frm">
+            <p:panelGrid columns="2" >
+                <p:outputLabel for="txtCodigo" value="Codigo" />
+                <p:inputText id="txtCodigo" value="#{personaBean.persona.codigo}"  />
+                
+                <p:outputLabel for="txtNombre"  value="Nombre" />
+                <p:inputText id="txtNombre" value="#{personaBean.persona.nombre}"  />
+            
+            <p:outputLabel value="Sexo" />
+            
+            <p:selectOneMenu value="#{personaBean.persona.sexo}">
+                <f:selectItem itemLabel="Masculino" itemValue="M" />
+                <f:selectItem itemLabel="FEMENINO" itemValue="F" />
+            </p:selectOneMenu>
+            
+            
+            <p:outputLabel value="Pais" />
+            <p:selectOneMenu value="#{personaBean.persona.pais}">
+                    <f:selectItem itemLabel="PERU" itemValue="peru" />
+                    <f:selectItem itemLabel="MEXICO" itemValue="mexico" />
+                    <f:selectItem itemLabel="EUA" itemValue="eua"/>
+                    
+                    <p:ajax event="change" listener="#{personaBean.cargarCiudadesPrime}" 
+                            update="cboCiudadPrime" />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Ciudad" />
+                <p:selectOneMenu id="cboCiudadPrime" value="#{personaBean.persona.ciudad}">
+                    <f:selectItems value="#{personaBean.lstCiudad}" />
+                    
+                    <p:ajax event="change" listener="#{personaBean.cargarMunicipios}" 
+                            update="cboMunicipio" />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Municipio" />
+                <p:selectOneMenu id="cboMunicipio" value="#{personaBean.persona.municipio}">
+                    <f:selectItems value="#{personaBean.lstMunicipio}" />
+                </p:selectOneMenu>
+                
+            
+            <p:commandButton value="Guardar" actionListener="#{personaBean.registrar}" update=":msj" />
+            <p:commandButton value="Listar" actionListener="#{personaBean.listar}" update="data"/>
+            
+            </p:panelGrid>
+            
+            <p:dataTable id="data" value="#{personaBean.lstPersonas}" var="per">
+                
+                <p:column headerText="Codigo">
+                    <p:outputLabel value="#{per.codigo}" />
+                </p:column>
+                
+                <p:column headerText="Nombre">
+                    <p:outputLabel value="#{per.nombre}" />
+                </p:column>
+                
+                <p:column headerText="Sexo">
+                    <p:outputLabel value="#{per.sexo}" />
+                </p:column>
+                
+                <p:column headerText="Modificar">
+                    <p:commandLink value="Modificar" actionListener="#{personaBean.leerID(per)}" oncomplete="PF('wdlgDatos').show();" update=":dlgDatos" />
+                    
+                </p:column>
+                
+                <p:column headerText="Eliminar">
+                    <p:commandLink value="Eliminar" actionListener="#{personaBean.eliminar(per)}" update="data" />
+                    
+                </p:column>
+         
+            </p:dataTable>
+            
+        </h:form>
+            
+            
+            <p:dialog header="datos" widgetVar="wdlgDatos" id="dlgDatos">
+                <h:form>
+                <p:panelGrid columns="2" >
+                <p:outputLabel value="Codigo" />
+                <p:inputText value="#{personaBean.persona.codigo}" />
+                
+                <p:outputLabel value="Nombre" />
+                <p:inputText value="#{personaBean.persona.nombre}" />
+            
+            <p:outputLabel value="Sexo" />
+            
+            <p:selectOneMenu value="#{personaBean.persona.sexo}">
+                <f:selectItem itemLabel="Masculino" itemValue="M" />
+                <f:selectItem itemLabel="FEMENINO" itemValue="F" />
+            </p:selectOneMenu>
+            
+            <p:commandButton value="Modificar" actionListener="#{personaBean.modificar()}" oncomplete="PF('wdlgDatos').hide();" update=":frm:data"   />
+            <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+            
+            </p:panelGrid>
+                    </h:form>
+            </p:dialog>
+            </center>
+    </h:body>
+</html>
+
